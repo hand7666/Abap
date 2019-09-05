@@ -156,11 +156,11 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
   method build_sm30_total.
     data:lr_table type ref to data.
 
-    "»ñÈ¡Êı¾İ¿â±í¶ÔÓ¦µÄ½á¹¹
+    "è·å–æ•°æ®åº“è¡¨å¯¹åº”çš„ç»“æ„
     data(lo_struct) = cast cl_abap_structdescr( cl_abap_tabledescr=>describe_by_name( i_tabname ) ).
     data(lt_comp) = lo_struct->get_components( ).
 
-    "Ìí¼Óaction && mark×Ö¶Î
+    "æ·»åŠ action && markå­—æ®µ
     data(lo_element) = cast cl_abap_datadescr( cl_abap_elemdescr=>describe_by_name( 'CHAR01') ).
     lt_comp = value #( base lt_comp ( name = 'ACTION' type = lo_element ) ( name = 'MARK' type = lo_element ) ).
     lo_struct = cl_abap_structdescr=>create( p_components = lt_comp ).
@@ -220,7 +220,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
   DATA(lo_element_descr) = cast cl_abap_elemdescr( cl_abap_elemdescr=>describe_by_data( i_field ) ).
   DATA(ls_element) = lo_element_descr->get_ddic_field( ).
 
-  MESSAGE s012(zmdg) WITH ls_element-fieldtext INTO DATA(lv_msg)."&1 ÊÇ±ØÊä×Ö¶Î
+  MESSAGE s012(zmdg) WITH ls_element-fieldtext INTO DATA(lv_msg)."&1 æ˜¯å¿…è¾“å­—æ®µ
 
   r_msg = r_msg && '/' && lv_msg.
   endmethod.
@@ -247,7 +247,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
     DATA(lo_element_descr) = CAST cl_abap_elemdescr( cl_abap_elemdescr=>describe_by_data( i_check_field ) ).
     DATA(ls_element) = lo_element_descr->get_ddic_field( ).
 
-    "»ñÈ¡ÎïÀí±í
+    "è·å–ç‰©ç†è¡¨
     get_usmd_phsy_table(
     EXPORTING
       i_model = i_model
@@ -259,7 +259,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
     CREATE DATA lr_record TYPE (lv_master_table).
     ASSIGN lr_record->* TO FIELD-SYMBOL(<fs_record>).
 
-    "Æ´½Ó¶¯Ì¬²éÑ¯Ìõ¼ş
+    "æ‹¼æ¥åŠ¨æ€æŸ¥è¯¢æ¡ä»¶
     DATA(r_field) = VALUE rsds_selopt_t( ( sign = 'I' option = 'EQ' low = i_check_field high = space  ) ).
     CLEAR ls_dynmic_sel.
     IF i_model_field IS SUPPLIED.
@@ -268,7 +268,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
       ls_dynmic_sel-fieldname = i_model_field.
     ENDIF.
 
-    "MDG×Ö¶ÎÌØÊâĞÔ
+    "MDGå­—æ®µç‰¹æ®Šæ€§
     IF ls_dynmic_sel-fieldname(2) EQ  'ZZ'.
       ls_dynmic_sel-fieldname = '/1MD/' && i_model && ls_dynmic_sel-fieldname.
     ENDIF.
@@ -297,7 +297,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
         ENDLOOP.
       ENDIF.
 
-      "²éÑ¯ÎïÀí±í
+      "æŸ¥è¯¢ç‰©ç†è¡¨
       SELECT SINGLE *
       FROM (lv_master_table)
       WHERE (lv_conditon)
@@ -312,7 +312,6 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
       ENDIF.
 
     ENDMETHOD.
-
 
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Static Public Method ZCL_COMMON_FM=>CORRESPOND_KEEP_OLD
@@ -330,7 +329,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF lv_src_kind EQ cl_abap_datadescr=>typekind_struct1."±âÆ½½á¹¹
+    IF lv_src_kind EQ cl_abap_datadescr=>typekind_struct1."æ‰å¹³ç»“æ„
       DATA(lo_src_struct) = CAST cl_abap_structdescr( cl_abap_structdescr=>describe_by_data( i_src ) ).
       DATA(lt_src_field) = lo_src_struct->get_components( ).
       LOOP AT lt_src_field INTO DATA(ls_src_field).
@@ -342,7 +341,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
 
       ENDLOOP.
 
-    ELSEIF lv_src_kind EQ cl_abap_datadescr=>typekind_table."ÄÚ±í---µÈ´ıÊµÏÖ
+    ELSEIF lv_src_kind EQ cl_abap_datadescr=>typekind_table."å†…è¡¨---ç­‰å¾…å®ç°
 
     ELSE.
       RETURN.
@@ -392,7 +391,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
          ls_object_key  type wwwdatatab,
          lv_destination type rlgrap-filename.
 
-    "Ğ£Ñé´æÔÚĞÔ
+    "æ ¡éªŒå­˜åœ¨æ€§
     select single relid,
                   objid,
                   text
@@ -403,19 +402,19 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
       and objid eq @i_id.
 
     if sy-subrc ne 0.
-      message 'Ä£°å¶ÔÏó²»´æÔÚ' type 'E'.
+      message 'æ¨¡æ¿å¯¹è±¡ä¸å­˜åœ¨' type 'E'.
     endif.
 
-    "»ñÈ¡±£´æÂ·¾¶
+    "è·å–ä¿å­˜è·¯å¾„
     cl_gui_frontend_services=>directory_browse(
     changing selected_folder = lv_folder
        ).
 
 
-    "ÏÂÔØÄ£°å
+    "ä¸‹è½½æ¨¡æ¿
     check lv_folder is not initial.
 
-    "»ñÈ¡Ä£°åºó×º
+    "è·å–æ¨¡æ¿åç¼€
     select single value
       from wwwparams
       where relid eq 'MI'
@@ -433,7 +432,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
       importing
         rc          = lv_rc.
     if lv_rc ne 0.
-      message 'Ä£°åÏÂÔØÊ§°Ü!' type 'S' display like 'E'.
+      message 'æ¨¡æ¿ä¸‹è½½å¤±è´¥!' type 'S' display like 'E'.
       leave list-processing.
     endif.
 
@@ -541,7 +540,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
 
     SHIFT e_snum LEFT DELETING LEADING '0'.
     CASE i_model.
-      WHEN 'ZX'."ÏîÄ¿µÄÌØÊâ¹æÔò
+      WHEN 'ZX'."é¡¹ç›®çš„ç‰¹æ®Šè§„åˆ™
         CONDENSE e_snum.
         e_snum =  'PJ' && sy-datum(4) && e_snum.
       WHEN OTHERS.
@@ -601,7 +600,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
     DATA:l_classname  TYPE rzlli_apcl,   "Server Group Name
          l_applserver TYPE rzllitab-applserver. "RFC Serve Group
 
-    "Ò»°ãÏµÍ³Ä¬ÈÏg_classname = 'parallel_generators'£¬µ«ÎªÁËÍ¨ÓÃĞÔ°´ÕÕÈçÏÂ·½·¨»ñÈ¡
+    "ä¸€èˆ¬ç³»ç»Ÿé»˜è®¤g_classname = 'parallel_generators'ï¼Œä½†ä¸ºäº†é€šç”¨æ€§æŒ‰ç…§å¦‚ä¸‹æ–¹æ³•è·å–
     CALL 'C_SAPGPARAM'                                    "#EC CI_CCALL
     ID 'NAME'  FIELD 'rdisp/myname'
     ID 'VALUE'  FIELD l_applserver.
@@ -610,7 +609,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
     FROM   rzllitab
     INTO     l_classname   "Server Group Name
     WHERE   applserver = l_applserver
-    AND  grouptype = 'S'.   "S:·şÎñÆ÷×é£¬¿Õ:µÇÂ½×é
+    AND  grouptype = 'S'.   "S:æœåŠ¡å™¨ç»„ï¼Œç©º:ç™»é™†ç»„
 
      r_class = l_classname.
 
@@ -711,7 +710,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
     ENDIF.
 
 
-    IF i_entity IS NOT SUPPLIED OR i_entity IS INITIAL."·µ»ØËùÓĞÎïÀí±í
+    IF i_entity IS NOT SUPPLIED OR i_entity IS INITIAL."è¿”å›æ‰€æœ‰ç‰©ç†è¡¨
 
       LOOP AT lt_log_phys_name INTO DATA(ls_logic_table) WHERE kind EQ 'TABL'.
         IF ls_logic_table-sub_kind EQ 'C'.
@@ -722,7 +721,7 @@ CLASS ZCL_COMMON_FM IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-    ELSE."·µ»ØÖ¸¶¨ÊµÌåµÄÎïÀí±í
+    ELSE."è¿”å›æŒ‡å®šå®ä½“çš„ç‰©ç†è¡¨
       LOOP AT lt_log_phys_name INTO ls_logic_table WHERE kind EQ 'TABL' AND entity EQ i_entity.
         e_table = ls_logic_table-phys_name.
         EXIT.
